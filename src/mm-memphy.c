@@ -170,11 +170,12 @@ int MEMPHY_dump(struct memphy_struct *mp)
    return -1;
 }
 
+//TODO: Add more dumpling code here
    printf("---- Memory Dump (Size: %d) ----\n", mp->maxsz);
-   for (int i = 0; i < mp->maxsz; i++) {
-      if (i % 16 == 0) printf("\n0x%04X: ", i);  // Print address every 16 bytes
-      printf("%02X ", (unsigned char)mp->storage[i]); // Print each byte in hex
-   }
+   // for (int i = 0; i < mp->maxsz; i++) {
+   //    if (i % 16 == 0) printf("\n0x%04X: ", i);  // Print address every 16 bytes
+   //    printf("%02X ", (unsigned char)mp->storage[i]); // Print each byte in hex
+   // }
    printf("\n--------------------------------\n");
    return 0;
 }
