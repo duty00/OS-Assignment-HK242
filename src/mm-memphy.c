@@ -37,7 +37,7 @@ int MEMPHY_mv_csr(struct memphy_struct *mp, int offset)
  */
 int MEMPHY_seq_read(struct memphy_struct *mp, int addr, BYTE *value)
 {
-   if (mp == NULL)
+   if (mp == NULL || !mp->storage || mp->cursor >= mp->maxsz)
       return -1;
 
    if (!mp->rdmflg)
@@ -45,6 +45,7 @@ int MEMPHY_seq_read(struct memphy_struct *mp, int addr, BYTE *value)
 
    MEMPHY_mv_csr(mp, addr);
    *value = (BYTE)mp->storage[addr];
+   mp->cursor++;
 
    return 0;
 }
@@ -77,7 +78,7 @@ int MEMPHY_read(struct memphy_struct *mp, int addr, BYTE *value)
 int MEMPHY_seq_write(struct memphy_struct *mp, int addr, BYTE value)
 {
 
-   if (mp == NULL)
+   if (mp == NULL || !mp->storage || mp->cursor >= mp->maxsz)
       return -1;
 
    if (!mp->rdmflg)
@@ -85,6 +86,7 @@ int MEMPHY_seq_write(struct memphy_struct *mp, int addr, BYTE value)
 
    MEMPHY_mv_csr(mp, addr);
    mp->storage[addr] = value;
+   mp->cursor++;
 
    return 0;
 }
@@ -163,6 +165,17 @@ int MEMPHY_dump(struct memphy_struct *mp)
   /*TODO dump memphy contnt mp->storage
    *     for tracing the memory content
    */
+  if (!mp || !mp->storage) {
+   printf("MEMPHY ERROR: Invalid memory structure\n");
+   return -1;
+}
+
+   printf("---- Memory Dump (Size: %d) ----\n", mp->maxsz);
+   for (int i = 0; i < mp->maxsz; i++) {
+      if (i % 16 == 0) printf("\n0x%04X: ", i);  // Print address every 16 bytes
+      printf("%02X ", (unsigned char)mp->storage[i]); // Print each byte in hex
+   }
+   printf("\n--------------------------------\n");
    return 0;
 }
 

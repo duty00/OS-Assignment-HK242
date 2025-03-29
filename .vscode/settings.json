@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "libmem.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "mem.h": "c",
+        "cstdint": "c"
     }
 }
