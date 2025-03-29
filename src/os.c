@@ -190,6 +190,7 @@ static void read_config(const char * path) {
 #else
 		fscanf(file, "%lu %s\n", &ld_processes.start_time[i], proc);
 #endif
+		printf("This is the proc: %s\n", proc);
 		strcat(ld_processes.path[i], proc);
 	}
 }
