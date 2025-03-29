@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "libmem.h": "c",
+        "string.h": "c"
+    }
+}
