@@ -162,23 +162,24 @@ int MEMPHY_get_freefp(struct memphy_struct *mp, int *retfpn)
 
 int MEMPHY_dump(struct memphy_struct *mp)
 {
-  /*TODO dump memphy contnt mp->storage
-   *     for tracing the memory content
-   */
   if (!mp || !mp->storage) {
-   printf("MEMPHY ERROR: Invalid memory structure\n");
-   return -1;
+    printf("MEMPHY ERROR: Invalid memory structure\n");
+    return -1;
+  }
+  printf("===== PHYSICAL MEMORY DUMP =====\n");
+  printf("This is maxsize: %d",mp->maxsz);
+  for (int i = 0; i < 160; i++) {
+    if (i % 16 == 0) {
+      printf("\nBYTE %08X: ", i);
+    }
+
+    printf("%02X ", (unsigned char)mp->storage[i]);
+  }
+
+  printf("\n===== PHYSICAL MEMORY END-DUMP =====\n");
+  return 0;
 }
 
-//TODO: Add more dumpling code here
-   printf("---- Memory Dump (Size: %d) ----\n", mp->maxsz);
-   // for (int i = 0; i < mp->maxsz; i++) {
-   //    if (i % 16 == 0) printf("\n0x%04X: ", i);  // Print address every 16 bytes
-   //    printf("%02X ", (unsigned char)mp->storage[i]); // Print each byte in hex
-   // }
-   printf("\n--------------------------------\n");
-   return 0;
-}
 
 int MEMPHY_put_freefp(struct memphy_struct *mp, int fpn)
 {
