@@ -168,6 +168,7 @@ int MEMPHY_dump(struct memphy_struct *mp)
   }
   printf("===== PHYSICAL MEMORY DUMP =====\n");
   printf("This is maxsize: %d",mp->maxsz);
+  //TODO: Modify this range
   for (int i = 0; i < 160; i++) {
     if (i % 16 == 0) {
       printf("\nBYTE %08X: ", i);
