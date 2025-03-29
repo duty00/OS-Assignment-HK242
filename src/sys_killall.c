@@ -55,7 +55,7 @@
      for (int i = 0; i < queue->size; i++) {
          if (strcmp(queue->proc[i]->path, proc_name) == 0) {
              printf("Terminating process: %s (PID: %d)\n", queue->proc[i]->path, queue->proc[i]->pid);
-             free(queue->proc[i]);
+             libfree(queue->proc[i],memrg);
              remove_process(queue, i);
              i--; // Giảm index để tránh bỏ sót phần tử
          }
@@ -70,7 +70,7 @@
          for (int i = 0; i < mlq_queue->size; i++) {
              if (strcmp(mlq_queue->proc[i]->path, proc_name) == 0) {
                  printf("Terminating queued process: %s (PID: %d)\n", mlq_queue->proc[i]->path, mlq_queue->proc[i]->pid);
-                 free(mlq_queue->proc[i]);
+                 libfree(queue->proc[i],memrg);
                  remove_process(mlq_queue, i);
                  i--; // Giảm index để tránh bỏ sót phần tử
              }
