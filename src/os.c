@@ -153,17 +153,18 @@ static void read_config(const char * path) {
 		malloc(sizeof(unsigned long) * num_processes);
 #ifdef MM_PAGING
 	int sit;
-// #ifdef MM_FIXED_MEMSZ
-// 	/* We provide here a back compatible with legacy OS simulatiom config file
-//          * In which, it have no addition config line for Mema, keep only one line
-// 	 * for legacy info 
-//          *  [time slice] [N = Number of CPU] [M = Number of Processes to be run]
-//          */
-//         memramsz    =  0x100000;
-//         memswpsz[0] = 0x1000000;
-// 	for(sit = 1; sit < PAGING_MAX_MMSWP; sit++)
-// 		memswpsz[sit] = 0;
-// #else
+#ifdef MM_FIXED_MEMSZ
+	/* We provide here a back compatible with legacy OS simulatiom config file
+         * In which, it have no addition config line for Mema, keep only one line
+	 * for legacy info 
+         *  [time slice] [N = Number of CPU] [M = Number of Processes to be run]
+         */
+        memramsz    =  0x100000;
+        memswpsz[0] = 0x1000000;
+	for(sit = 1; sit < PAGING_MAX_MMSWP; sit++)
+		memswpsz[sit] = 0;
+#else
+// ORIGINAL LOGIC:
 // 	/* Read input config of memory size: MEMRAM and upto 4 MEMSWP (mem swap)
 // 	 * Format: (size=0 result non-used memswap, must have RAM and at least 1 SWAP)
 // 	 *        MEM_RAM_SZ MEM_SWP0_SZ MEM_SWP1_SZ MEM_SWP2_SZ MEM_SWP3_SZ
@@ -173,8 +174,8 @@ static void read_config(const char * path) {
 // 		fscanf(file, "%d", &(memswpsz[sit])); 
 
 //        fscanf(file, "\n"); /* Final character */
-// #endif
 
+//NEW LOGIC:
 long first_value;
 char second_value[100];
 int pos = ftell(file); // Save file position
@@ -191,20 +192,19 @@ for (int i = 0; second_value[i] != '\0'; i++) {
 }
 
 if (is_memory_config) {
-	// New config with memory size line
 	memramsz = first_value;
 	memswpsz[0] = strtoul(second_value, NULL, 10);
 	for (sit = 1; sit < PAGING_MAX_MMSWP; sit++)
 		fscanf(file, "%d", &(memswpsz[sit]));
 	fscanf(file, "\n");
 } else {
-	// Legacy config, reset and rewind
 	memramsz = 0x100000;
 	memswpsz[0] = 0x1000000;
 	for (sit = 1; sit < PAGING_MAX_MMSWP; sit++)
 		memswpsz[sit] = 0;
 	fseek(file, pos, SEEK_SET);
 }
+#endif
 #endif
 
 #ifdef MLQ_SCHED
