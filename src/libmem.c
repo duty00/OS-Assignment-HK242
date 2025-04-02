@@ -462,7 +462,7 @@
    /* TODO: Implement the theorical mechanism to find the victim page */
    struct pgn_t *pg = mm->fifo_pgn;
  
-   if(pg = NULL){
+   if(pg == NULL){
      return -1;
    }
    *retpgn = pg->pgn;
