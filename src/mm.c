@@ -77,40 +77,31 @@
   * vmap_page_range - map a range of page at aligned address
   */
  int vmap_page_range(
-     struct pcb_t *caller,           // process call
-     int addr,                       // start address which is aligned to pagesz
-     int pgnum,                      // num of mapping page
-     struct framephy_struct *frames, // list of the mapped frames
-     struct vm_rg_struct *ret_rg)    // return mapped region, the real mapped fp
- {                                   // no guarantee all given pages are mapped
-   struct framephy_struct *fpit = frames;
-   int pgit = 0;
-   int pgn = PAGING_PGN(addr);
- 
-   /* TODO: update the rg_end and rg_start of ret_rg
-   //ret_rg->rg_end =  ....
-   //ret_rg->rg_start = ...
-   //ret_rg->vmaid = ...
-   */
-   ret_rg->rg_start = addr;
-   ret_rg->rg_end = addr + pgnum * PAGING_PAGESZ;
-   ret_rg->rg_next = NULL;
- 
-   /* TODO map range of frame to address space
-    *      [addr to addr + pgnum*PAGING_PAGESZ
-    *      in page table caller->mm->pgd[]
-    */
-   while (pgit < pgnum && fpit != NULL) {
-     caller->mm->pgd[pgn + pgit] = fpit->fpn;
-     fpit = fpit->fp_next;
-     pgit++;
-   }
-   /* Tracking for later page replacement activities (if needed)
-    * Enqueue new usage page */
-   enlist_pgn_node(&caller->mm->fifo_pgn, pgn + pgit);
- 
-   return 0;
- }
+  struct pcb_t *caller,           // process call
+  int addr,                       // start address which is aligned to pagesz
+  int pgnum,                      // num of mapping page
+  struct framephy_struct *frames, // list of the mapped frames
+  struct vm_rg_struct *ret_rg)    // return mapped region
+{
+  struct framephy_struct *fpit = frames;
+  int pgit = 0;
+  int pgn = PAGING_PGN(addr);
+
+  ret_rg->rg_start = addr;
+  ret_rg->rg_end = addr + pgnum * PAGING_PAGESZ;
+  ret_rg->rg_next = NULL;
+
+  /* Map range of frame to address space */
+  while (pgit < pgnum && fpit != NULL) {
+      pte_set_fpn(&caller->mm->pgd[pgn + pgit], fpit->fpn); // Use pte_set_fpn to set PTE correctly
+      fpit = fpit->fp_next;
+      pgit++;
+  }
+  /* Tracking for later page replacement activities */
+  enlist_pgn_node(&caller->mm->fifo_pgn, pgn + pgit);
+
+  return 0;
+}
  
  /*
   * alloc_pages_range - allocate req_pgnum of frame in ram
