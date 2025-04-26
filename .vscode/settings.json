@@ -10,6 +10,8 @@
         "queue.h": "c",
         "stdio.h": "c",
         "type_traits": "c",
-        "*.lst": "c"
+        "*.lst": "c",
+        "cpu.h": "c",
+        "stdint.h": "c"
     }
 }

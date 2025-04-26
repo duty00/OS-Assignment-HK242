@@ -235,9 +235,8 @@
      }
  
      struct sc_regs regs;
-     regs.a1 = phyaddr;
-     regs.a2 = 1;
-     regs.a3 = SYSMEM_IO_READ;
+     regs.a1 = SYSMEM_IO_READ;
+     regs.a2 = phyaddr;
  
      if (syscall(caller, 17, &regs) < 0) {
          #ifdef IODUMP
@@ -246,7 +245,7 @@
          return -1;
      }
  
-     *data = (BYTE)regs.a4;
+     *data = (BYTE)regs.a3;
      *phyaddr_out = phyaddr;
      
      #ifdef IODUMP
@@ -280,9 +279,9 @@
      }
  
      struct sc_regs regs;
-     regs.a1 = phyaddr;
-     regs.a2 = value;
-     regs.a3 = SYSMEM_IO_WRITE;
+     regs.a1 = SYSMEM_IO_WRITE;
+     regs.a2 = phyaddr;
+     regs.a3 = value;
  
      if (syscall(caller, 17, &regs) < 0) {
          #ifdef IODUMP
