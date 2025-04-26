@@ -248,7 +248,7 @@
  
      *data = (BYTE)regs.a4;
      *phyaddr_out = phyaddr;
- 
+     
      #ifdef IODUMP
      printf("\tpg_getval: phyaddr=%08X value=%d\n", phyaddr, *data);
      #endif
@@ -294,6 +294,7 @@
      *phyaddr_out = phyaddr;
  
      #ifdef IODUMP
+     MEMPHY_write(caller->mram, phyaddr, value);
      printf("\tpg_setval: phyaddr=%08X value=%d\n", phyaddr, value);
      #endif
      return 0;

@@ -3,6 +3,13 @@
         "libmem.h": "c",
         "string.h": "c",
         "mem.h": "c",
-        "cstdint": "c"
+        "cstdint": "c",
+        "syscall.h": "c",
+        "mm.h": "c",
+        "common.h": "c",
+        "queue.h": "c",
+        "stdio.h": "c",
+        "type_traits": "c",
+        "*.lst": "c"
     }
 }

@@ -79,7 +79,7 @@ int MEMPHY_seq_write(struct memphy_struct *mp, int addr, BYTE value)
 {
 
    if (mp == NULL || !mp->storage || mp->cursor >= mp->maxsz)
-      return -1;
+       return -1;
 
    if (!mp->rdmflg)
       return -1; /* Not compatible mode for sequential read */
@@ -151,33 +151,33 @@ int MEMPHY_get_freefp(struct memphy_struct *mp, int *retfpn)
 
    *retfpn = fp->fpn;
    mp->free_fp_list = fp->fp_next;
+   // ADD ZERO-FILL-ON-PAGE-DEMAND
+   int pageoff = fp->fpn * PAGING_PAGESZ;
+   for (int i = 0; i < PAGING_PAGESZ; i++) {
+       mp->storage[pageoff + i] = 0;
+   }
+   // END ZERO-FILL-ON-PAGE-DEMAND
 
+   free(fp);
+   fp = NULL;
    /* MEMPHY is iteratively used up until its exhausted
     * No garbage collector acting then it not been released
     */
-   free(fp);
-
    return 0;
 }
 
 int MEMPHY_dump(struct memphy_struct *mp)
 {
-  if (!mp || !mp->storage) {
+   if (mp == NULL || mp->storage == NULL) {
     printf("MEMPHY ERROR: Invalid memory structure\n");
     return -1;
   }
   printf("===== PHYSICAL MEMORY DUMP =====\n");
-  printf("This is maxsize: %d",mp->maxsz);
-  //TODO: Modify this range
-  for (int i = 0; i < 160; i++) {
-    if (i % 16 == 0) {
-      printf("\nBYTE %08X: ", i);
-    }
+  for (int i = 0; i < mp->maxsz; i += 1) {
+   if (mp->storage[i] != 0) printf("BYTE %08X: %d \n", i, mp->storage[i]);
+}
 
-    printf("%02X ", (unsigned char)mp->storage[i]);
-  }
-
-  printf("\n===== PHYSICAL MEMORY END-DUMP =====\n");
+  printf("===== PHYSICAL MEMORY END-DUMP =====\n");
   return 0;
 }
 
