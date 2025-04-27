@@ -100,7 +100,8 @@
  
      caller->mm->symrgtbl[rgid].rg_start = old_sbrk;
      caller->mm->symrgtbl[rgid].rg_end = old_sbrk + inc_sz;
- 
+     *alloc_addr = old_sbrk;
+     
      #ifdef IODUMP
      printf("===== PHYSICAL MEMORY AFTER ALLOCATION =====\n");
      printf("PID=%d - Region=%d - Address=%08X - Size=%d byte\n", 
@@ -108,7 +109,6 @@
      print_pgtbl(caller, 0, -1);
      printf("================================================================\n");
      #endif
-     *alloc_addr = old_sbrk;
      pthread_mutex_unlock(&mmvm_lock);
      return 0;
  }
