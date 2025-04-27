@@ -93,10 +93,10 @@
          return -1; /* Syscall failed */
      }
  
-     if (inc_vma_limit(caller, vmaid, inc_sz) < 0) {
-         pthread_mutex_unlock(&mmvm_lock);
-         return -1; /* Failed to increase limit */
-     }
+    //  if (inc_vma_limit(caller, vmaid, inc_sz) < 0) {
+    //      pthread_mutex_unlock(&mmvm_lock);
+    //      return -1; /* Failed to increase limit */
+    //  }
  
      caller->mm->symrgtbl[rgid].rg_start = old_sbrk;
      caller->mm->symrgtbl[rgid].rg_end = old_sbrk + inc_sz;
