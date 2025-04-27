@@ -128,7 +128,7 @@
        *frm_lst = newfp_str;
      } else {
        // TODO: ERROR CODE of obtaining some but not enough frames
-       return -1;
+       return -3000;
      }
    }
    return 0;

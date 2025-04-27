@@ -100,7 +100,6 @@
  
      caller->mm->symrgtbl[rgid].rg_start = old_sbrk;
      caller->mm->symrgtbl[rgid].rg_end = old_sbrk + inc_sz;
-     *alloc_addr = old_sbrk;
  
      #ifdef IODUMP
      printf("===== PHYSICAL MEMORY AFTER ALLOCATION =====\n");
@@ -109,7 +108,7 @@
      print_pgtbl(caller, 0, -1);
      printf("================================================================\n");
      #endif
- 
+     *alloc_addr = old_sbrk;
      pthread_mutex_unlock(&mmvm_lock);
      return 0;
  }
@@ -249,7 +248,7 @@
      *phyaddr_out = phyaddr;
      
      #ifdef IODUMP
-     printf("\tpg_getval: phyaddr=%08X value=%d\n", phyaddr, *data);
+     //printf("\tpg_getval: phyaddr=%08X value=%d\n", phyaddr, *data);
      #endif
      return 0;
  }
@@ -293,7 +292,7 @@
      *phyaddr_out = phyaddr;
  
      #ifdef IODUMP
-     printf("\tpg_setval: phyaddr=%08X value=%d\n", phyaddr, value);
+     //printf("\tpg_setval: phyaddr=%08X value=%d\n", phyaddr, value);
      #endif
      return 0;
  }
@@ -334,17 +333,13 @@
          return -1;
      }
  
-     #ifdef IODUMP
-     printf("===== PHYSICAL MEMORY AFTER READING =====\n");
-     printf("\tread region=%d offset=%d value=", source, offset);
-     #endif
- 
      int val = pg_getval(proc->mm, currg->rg_start + offset, &data, proc, &phyaddr);
  
      if (val == 0) {
          *destination = data;
          #ifdef IODUMP
-         printf("%d\n", data);
+         printf("===== PHYSICAL MEMORY AFTER READING =====\n");
+         printf("\tread region=%d offset=%d value=%d\n", source, offset, data);
          print_pgtbl(proc, 0, -1);
          printf("================================================================\n");
          MEMPHY_dump(proc->mram);
