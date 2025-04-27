@@ -344,7 +344,17 @@
    for (pgit = pgn_start; pgit < pgn_end; pgit++) {
      printf("%08ld: %08x\n", pgit * sizeof(uint32_t), caller->mm->pgd[pgit]);
    }
- 
+
+   for (pgit = pgn_start; pgit < pgn_end; pgit++) {
+    uint32_t entry = caller->mm->pgd[pgit];
+      if (entry & 0x80000000) { // Nếu valid bit = 1
+          uint32_t frame_number = entry & 0x7FFFFFFF; // Lấy 31 bits thấp
+          printf("Page Number: %d -> Frame Number: %d\n", pgit, frame_number);
+      } else {
+          printf("Page Number: %d -> Not mapped (invalid)\n", pgit);
+      }
+    }
+
    return 0;
  }
  
