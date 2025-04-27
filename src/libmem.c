@@ -84,9 +84,9 @@
      int old_sbrk = cur_vma->sbrk;
  
      struct sc_regs regs;
-     regs.a1 = vmaid;
-     regs.a2 = inc_sz;
-     regs.a3 = SYSMEM_INC_OP;
+     regs.a1 = SYSMEM_INC_OP;
+     regs.a2 = vmaid;
+     regs.a3 = inc_sz;
  
      if (syscall(caller, 17, &regs) < 0) {
          pthread_mutex_unlock(&mmvm_lock);
@@ -105,7 +105,7 @@
      #ifdef IODUMP
      printf("===== PHYSICAL MEMORY AFTER ALLOCATION =====\n");
      printf("PID=%d - Region=%d - Address=%08X - Size=%d byte\n", 
-            caller->pid, rgid, *alloc_addr, inc_sz);
+            caller->pid, rgid, *alloc_addr, size);
      print_pgtbl(caller, 0, -1);
      printf("================================================================\n");
      #endif
@@ -181,9 +181,9 @@
          }
  
          struct sc_regs regs;
-         regs.a1 = vicfpn;
-         regs.a2 = swpfpn;
-         regs.a3 = SYSMEM_SWP_OP;
+         regs.a1 = SYSMEM_SWP_OP;
+         regs.a2 = vicfpn;
+         regs.a3 = swpfpn;
          if (syscall(caller, 17, &regs) < 0) {
              MEMPHY_put_freefp(caller->active_mswp, swpfpn);
              return -1;
@@ -193,9 +193,9 @@
  
          int tgtfpn = PAGING_PTE_SWP(pte);
  
-         regs.a1 = tgtfpn;
-         regs.a2 = vicfpn;
-         regs.a3 = SYSMEM_SWP_OP;
+         regs.a1 = SYSMEM_SWP_OP;
+         regs.a2 = tgtfpn;
+         regs.a3 = vicfpn;
          if (syscall(caller, 17, &regs) < 0) {
              return -1; /* Assume kernel rollback */
          }
@@ -293,7 +293,6 @@
      *phyaddr_out = phyaddr;
  
      #ifdef IODUMP
-     MEMPHY_write(caller->mram, phyaddr, value);
      printf("\tpg_setval: phyaddr=%08X value=%d\n", phyaddr, value);
      #endif
      return 0;
